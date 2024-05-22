@@ -40,8 +40,9 @@ Nodes:
         LimitDuration: 0 # How many minutes will the limiting last (unit: minute)
       GlobalDeviceLimitConfig:
         Enable: false # Enable the global device limit of a user
-        RedisAddr: 127.0.0.1:6379 # The redis server address
-        RedisPassword: YOUR PASSWORD # Redis password
+        RedisNetwork: tcp # Redis protocol, tcp or unix
+        RedisAddr: 127.0.0.1:6379 # Redis server address, or unix socket path
+        RedisUsername: # Redis username
         RedisDB: 0 # Redis DB
         Timeout: 5 # Timeout for redis request
         Expiry: 60 # Expiry time (second)
