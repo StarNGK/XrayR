@@ -2,13 +2,14 @@ package panel
 
 import (
 	"encoding/json"
-	"github.com/StarNGK/XrayR/api/bunpanel"
-        "github.com/StarNGK/XrayR/api/gov2panel"
-	"github.com/StarNGK/XrayR/api/newV2board"
-	"github.com/StarNGK/XrayR/app/mydispatcher"
 	"log"
 	"os"
 	"sync"
+
+	"github.com/StarNGK/XrayR/api/bunpanel"
+	"github.com/StarNGK/XrayR/api/gov2panel"
+	"github.com/StarNGK/XrayR/api/newV2board"
+	"github.com/StarNGK/XrayR/app/mydispatcher"
 
 	"dario.cat/mergo"
 	"github.com/r3labs/diff/v2"
@@ -96,10 +97,10 @@ func (p *Panel) loadCore(panelConfig *Config) *core.Instance {
 	var coreCustomInboundConfig []conf.InboundDetourConfig
 	if panelConfig.InboundConfigPath != "" {
 		if data, err := os.ReadFile(panelConfig.InboundConfigPath); err != nil {
-			log.Panicf("Failed to read Custom Inbound config file at: %s", panelConfig.OutboundConfigPath)
+			log.Panicf("Failed to read Custom Inbound config file at: %s", panelConfig.InboundConfigPath)
 		} else {
 			if err = json.Unmarshal(data, &coreCustomInboundConfig); err != nil {
-				log.Panicf("Failed to unmarshal Custom Inbound config: %s", panelConfig.OutboundConfigPath)
+				log.Panicf("Failed to unmarshal Custom Inbound config: %s", panelConfig.InboundConfigPath)
 			}
 		}
 	}
@@ -188,7 +189,7 @@ func (p *Panel) Start() {
 		case "GoV2Panel":
 			apiClient = gov2panel.New(nodeConfig.ApiConfig)
 		case "BunPanel":
-			apiClient = bunpanel.New(nodeConfig.ApiConfig)			
+			apiClient = bunpanel.New(nodeConfig.ApiConfig)
 		default:
 			log.Panicf("Unsupport panel type: %s", nodeConfig.PanelType)
 		}
@@ -209,7 +210,7 @@ func (p *Panel) Start() {
 	for _, s := range p.Service {
 		err := s.Start()
 		if err != nil {
-			log.Panicf("Panel Start fialed: %s", err)
+			log.Panicf("Panel Start failed: %s", err)
 		}
 	}
 	p.Running = true
@@ -223,7 +224,7 @@ func (p *Panel) Close() {
 	for _, s := range p.Service {
 		err := s.Close()
 		if err != nil {
-			log.Panicf("Panel Close fialed: %s", err)
+			log.Panicf("Panel Close failed: %s", err)
 		}
 	}
 	p.Service = nil
