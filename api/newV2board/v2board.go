@@ -336,11 +336,7 @@ func (c *APIClient) ReportNodeOnlineUsers(onlineUserList *[]api.OnlineUser) erro
 	for _, onlineuser := range *onlineUserList {
 		// json structure: { UID1:["ip1","ip2"],UID2:["ip3","ip4"] }
 		data[onlineuser.UID] = append(data[onlineuser.UID], onlineuser.IP)
-		if _, ok := reportOnline[onlineuser.UID]; ok {
-			reportOnline[onlineuser.UID]++
-		} else {
-			reportOnline[onlineuser.UID] = 1
-		}
+		reportOnline[onlineuser.UID]++
 	}
 	c.LastReportOnline = reportOnline // Update LastReportOnline
 
