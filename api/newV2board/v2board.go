@@ -24,19 +24,19 @@ import (
 
 // APIClient create an api client to the panel.
 type APIClient struct {
-	client           *resty.Client
-	APIHost          string
-	NodeID           int
-	Key              string
-	NodeType         string
-	EnableVless      bool
-	VlessFlow        string
-	SpeedLimit       float64
-	DeviceLimit      int
-	LocalRuleList    []api.DetectRule
-	LastReportOnline map[int]int
-	resp             atomic.Value
-	eTags            map[string]string
+	client        *resty.Client
+	APIHost       string
+	NodeID        int
+	Key           string
+	NodeType      string
+	EnableVless   bool
+	VlessFlow     string
+	SpeedLimit    float64
+	DeviceLimit   int
+	LocalRuleList []api.DetectRule
+	resp          atomic.Value
+	eTags         map[string]string
+	AliveMap      *AliveMap
 }
 
 // New create an api instance
