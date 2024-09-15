@@ -19,7 +19,7 @@ import (
 	"github.com/xtls/xray-core/common/net"
 	"github.com/xtls/xray-core/infra/conf"
 
-	"github.com//StarNGK/XrayR/api"
+	"github.com/StarNGK/XrayR/api"
 )
 
 // APIClient create an api client to the panel.
