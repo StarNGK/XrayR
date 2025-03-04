@@ -24,10 +24,10 @@ require (
 	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.10.0
 	github.com/xtls/xray-core v1.8.25-0.20250303153022-e15dff94b5bd
-	golang.org/x/crypto v0.31.0
+	golang.org/x/crypto v0.32.0
 	golang.org/x/net v0.33.0
 	golang.org/x/time v0.5.0
-	google.golang.org/protobuf v1.36.1
+	google.golang.org/protobuf v1.36.2
 )
 
 require (
@@ -282,7 +282,7 @@ require (
 	google.golang.org/genproto v0.0.0-20240314234333-6e1732d8331c // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20241015192408-796eee8c2d53 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20241015192408-796eee8c2d53 // indirect
-	google.golang.org/grpc v1.69.2 // indirect
+	google.golang.org/grpc v1.69.4 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/ns1/ns1-go.v2 v2.9.0 // indirect
