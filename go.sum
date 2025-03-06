@@ -1481,6 +1481,10 @@ github.com/prometheus/procfs v0.13.0/go.mod h1:cd4PFCR54QLnGKPaKGA6l+cfuNXtht43Z
 github.com/prometheus/tsdb v0.7.1/go.mod h1:qhTCs0VvXwvX/y3TZrWD7rabWM+ijKTux40TwIPHuXU=
 github.com/quic-go/qpack v0.5.1 h1:giqksBPnT/HDtZ6VhtFKgoLOWmlyo9Ei6u9PqzIMbhI=
 github.com/quic-go/qpack v0.5.1/go.mod h1:+PC4XFrEskIVkcLzpEkbLqq1uCoxPhQuvK5rH1ZgaEg=
+github.com/quic-go/quic-go v0.49.0 h1:w5iJHXwHxs1QxyBv1EHKuC50GX5to8mJAxvtnttJp94=
+github.com/quic-go/quic-go v0.49.0/go.mod h1:s2wDnmCdooUQBmQfpUSTCYBl1/D4FcqbULMMkASvR6s=
+github.com/quic-go/quic-go v0.50.0 h1:3H/ld1pa3CYhkcc20TPIyG1bNsdhn9qZBGN3b9/UyUo=
+github.com/quic-go/quic-go v0.50.0/go.mod h1:Vim6OmUvlYdwBhXP9ZVrtGmCMWa3wEqhq3NgYrI8b4E=
 github.com/r3labs/diff/v2 v2.15.1 h1:EOrVqPUzi+njlumoqJwiS/TgGgmZo83619FNDB9xQUg=
 github.com/r3labs/diff/v2 v2.15.1/go.mod h1:I8noH9Fc2fjSaMxqF3G2lhDdC0b+JXCfyx85tWFM9kc=
 github.com/redis/go-redis/v9 v9.5.1 h1:H1X4D3yHPaYrkL5X06Wh6xNVM/pX0Ft4RV0vMGvLBh8=
@@ -1684,8 +1688,8 @@ github.com/xtls/xray-core v1.8.25-0.20250115034836-4576f56ec82e h1:1y13768zZbKSi
 github.com/xtls/xray-core v1.8.25-0.20250115034836-4576f56ec82e/go.mod h1:lE8xfV63fqCFfUwCDUMWfBENSh3LS3rQUQft93b5PiI=
 github.com/xtls/xray-core v1.8.25-0.20250130105737-0a8470cb14eb h1:VBzDZ4XHT9FM0S3qvXp6KuTOk7mXQQm0pjOW0Neeog4=
 github.com/xtls/xray-core v1.8.25-0.20250130105737-0a8470cb14eb/go.mod h1:EKhNEDY/WIB+ylEbVv2pzUaP08W/lt0sYmJQ9FJruko=
-github.com/xtls/xray-core v1.8.25-0.20250303153022-e15dff94b5bd h1:xzZCYhdr1pL1kZe7GysAMuVNtlzXqsQKTFbc1xvR+bI=
-github.com/xtls/xray-core v1.8.25-0.20250303153022-e15dff94b5bd/go.mod h1:0n4A2nJD1yZlxuXexV5rJODKcJJo8zpbTFcESVg8fgM=
+github.com/xtls/xray-core v1.8.25-0.20250221075831-be43f66b63d5 h1:x4pNCiwk/x/zS/dpZl8fdNzC0YP8NBIOVZOAA1in/Zo=
+github.com/xtls/xray-core v1.8.25-0.20250221075831-be43f66b63d5/go.mod h1:bPLUPQGZ8ADeL1CANo0nIUNchY+SuhZCT+ItgprlPf4=
 github.com/yalp/jsonpath v0.0.0-20180802001716-5cc68e5049a0 h1:6fRhSjgLCkTD3JnJxvaJ4Sj+TYblw757bqYgZaOq5ZY=
 github.com/yalp/jsonpath v0.0.0-20180802001716-5cc68e5049a0/go.mod h1:/LWChgwKmvncFJFHJ7Gvn9wZArjbV5/FppcK2fKk/tI=
 github.com/yandex-cloud/go-genproto v0.0.0-20240311082839-58e1a7554a75 h1:hkFRBcSOFUNuuORzA5DqvBcoFjH7R0HCIu+mlSSw56U=
