@@ -1,6 +1,6 @@
 module github.com/StarNGK/XrayR
 
-go 1.23.1
+go 1.24.1
 
 require (
 	dario.cat/mergo v1.0.0
