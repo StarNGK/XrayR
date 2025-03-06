@@ -2,8 +2,6 @@ module github.com/StarNGK/XrayR
 
 go 1.23.1
 
-go 1.23.1
-
 require (
 	dario.cat/mergo v1.0.0
 	github.com/bitly/go-simplejson v0.5.1
