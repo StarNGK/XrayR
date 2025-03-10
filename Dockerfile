@@ -4,7 +4,7 @@ WORKDIR /app
 COPY . .
 ENV CGO_ENABLED=0
 RUN go mod download \
-    && go build -v -x -o XrayR -trimpath -ldflags "-s -w -buildid="
+    && go build -v -o XrayR -trimpath -ldflags "-s -w -buildid="
 
 # Release
 FROM alpine:latest
