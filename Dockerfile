@@ -1,5 +1,5 @@
 # Build go
-FROM golang:1.23.1-alpine AS builder
+FROM golang:1.24.0-alpine AS builder
 WORKDIR /app
 COPY . .
 ENV CGO_ENABLED=0
