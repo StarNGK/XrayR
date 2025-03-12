@@ -1,22 +1,12 @@
 name: Publish Docker image
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
-    paths:
-      - "**/*.go"
-      - "go.mod"
-      - "go.sum"
-      - ".github/workflows/*.yml"
-    tags:
-      - 'v*'
-  pull_request:
-    branches:
-      - 'master'
+  release:
+    types:
+      - published
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: starngk/xrayr
+  IMAGE_NAME: ${{ github.repository_owner }}/xrayr
 
 jobs:
   build:
@@ -26,8 +16,6 @@ jobs:
       matrix:
         platform:
           - linux/amd64
-          - linux/arm/v6
-          - linux/arm/v7
           - linux/arm64
           - linux/s390x
     steps:
@@ -50,7 +38,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push by digest
         id: build
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v5
         with:
           context: .
           platforms: ${{ matrix.platform }}
@@ -60,11 +48,11 @@ jobs:
         run: |
           mkdir -p /tmp/digests
           digest="${{ steps.build.outputs.digest }}"
-          touch "/tmp/digests/${digest#sha256:}"
+          touch "/tmp/digests/${digest#sha256:}"          
       - name: Upload digest
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: digests-${{ github.run_id }}
+          name: digests
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
@@ -75,12 +63,12 @@ jobs:
       - build
     steps:
       - name: Download digests
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
-          name: digests-${{ github.run_id }}
+          name: digests
           path: /tmp/digests
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@v3
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
