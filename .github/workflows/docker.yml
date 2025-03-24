@@ -49,7 +49,7 @@ jobs:
         run: |
           mkdir -p /tmp/digests
           digest="${{ steps.build.outputs.digest }}"
-          sanitized_digest="${digest//:/-}"  # 替换冒号为连字符
+          sanitized_digest="${digest//:/-}"
           touch "/tmp/digests/${sanitized_digest#sha256-}"
       - name: Upload digest
         uses: actions/upload-artifact@v4
