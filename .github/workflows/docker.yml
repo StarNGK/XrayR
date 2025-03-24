@@ -11,7 +11,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
       matrix:
         platform:
           - linux/amd64
@@ -54,15 +53,15 @@ jobs:
       - name: Export digest
         run: |
           mkdir -p /tmp/digests
-          digest="${{ steps.build.outputs.digest }}"
-          sanitized_digest="${digest//:/-}"  # 替换冒号为连字符
-          echo $sanitized_digest > "/tmp/digests/${sanitized_digest#sha256-}"
+          # 获取 Digest 并用连字符替换所有冒号
+          sanitized_digest="${{ steps.build.outputs.digest//:/- }}"
+          echo $sanitized_digest > /tmp/digests/digest.txt
       
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
-          name: "digest-${{ github.run_id }}"  # 使用有效的工件名称
-          path: /tmp/digests/*
+          name: digest-${{ github.run_id }}
+          path: /tmp/digests/digest.txt
           if-no-files-found: error
           retention-days: 1
 
@@ -72,9 +71,9 @@ jobs:
       - build
     steps:
       - name: Download digests
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4
         with:
-          name: "digest-${{ github.run_id }}"
+          name: digest-${{ github.run_id }}
           path: /tmp/digests
 
       - name: Set up Docker Buildx
@@ -93,15 +92,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create manifest list and push
-        working-directory: /tmp/digests
+      - name: Create and push manifest list
         run: |
-          echo "Files in /tmp/digests:"
-          ls -al /tmp/digests
-          echo docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@sha256-%s ' $(ls /tmp/digests))
-          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@sha256-%s ' $(ls /tmp/digests))
+          digest=$(cat /tmp/digests/digest.txt)
+          docker buildx imagetools create \
+            --tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }} \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@$digest
 
       - name: Inspect image
         run: |
