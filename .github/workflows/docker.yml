@@ -53,14 +53,15 @@ jobs:
       - name: Export digest
         run: |
           mkdir -p /tmp/digests
-          # 获取 Digest 并用连字符替换所有冒号
+          # 获取 digest 并替换冒号为连字符
           sanitized_digest="${{ steps.build.outputs.digest//:/- }}"
-          echo $sanitized_digest > /tmp/digests/digest.txt
-      
+          echo "$sanitized_digest" > /tmp/digests/digest.txt
+
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
-          name: digest-${{ github.run_id }}
+          # 使用处理后的 digest 作为文件名，同时保证整体名称合法
+          name: digests-${{ github.run_id }}-${sanitized_digest}
           path: /tmp/digests/digest.txt
           if-no-files-found: error
           retention-days: 1
@@ -73,7 +74,7 @@ jobs:
       - name: Download digests
         uses: actions/download-artifact@v4
         with:
-          name: digest-${{ github.run_id }}
+          name: digests-${{ github.run_id }}-${sanitized_digest}
           path: /tmp/digests
 
       - name: Set up Docker Buildx
@@ -94,7 +95,7 @@ jobs:
 
       - name: Create and push manifest list
         run: |
-          digest=$(cat /tmp/digests/digest.txt)
+          digest=$(cat /tmp/digests/digest.txt | sed 's/-/:/g')
           docker buildx imagetools create \
             --tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }} \
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@$digest
@@ -102,3 +103,4 @@ jobs:
       - name: Inspect image
         run: |
           docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}
+
