@@ -53,16 +53,17 @@ jobs:
       - name: Export digest
         run: |
           mkdir -p /tmp/digests
-          # 获取 digest 并替换冒号为连字符
-          sanitized_digest="${{ steps.build.outputs.digest//:/- }}"
-          echo "$sanitized_digest" > /tmp/digests/digest.txt
+          digest="${{ steps.build.outputs.digest }}"
+          # 把冒号替换成连字符
+          sanitized_digest="${digest//:/-}"
+          echo "$sanitized_digest" > "/tmp/digests/${sanitized_digest#sha256-}"
 
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
-          # 使用处理后的 digest 作为文件名，同时保证整体名称合法
-          name: digests-${{ github.run_id }}-${sanitized_digest}
-          path: /tmp/digests/digest.txt
+          # 确保工件名称不包含冒号
+          name: digests-${{ github.run_id }}-${{ github.run_number }}-${sanitized_digest}
+          path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
 
@@ -74,7 +75,7 @@ jobs:
       - name: Download digests
         uses: actions/download-artifact@v4
         with:
-          name: digests-${{ github.run_id }}-${sanitized_digest}
+          name: digests-${{ github.run_id }}-${{ github.run_number }}-${sanitized_digest}
           path: /tmp/digests
 
       - name: Set up Docker Buildx
@@ -93,12 +94,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create and push manifest list
+      - name: Create manifest list and push
+        working-directory: /tmp/digests
         run: |
-          digest=$(cat /tmp/digests/digest.txt | sed 's/-/:/g')
-          docker buildx imagetools create \
-            --tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }} \
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@$digest
+          echo "Files in /tmp/digests:"
+          ls -al /tmp/digests
+          digests=$(ls /tmp/digests | sed 's/^/sha256:/' | tr '\n' ' ')
+          echo docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@%s ' $digests)
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@%s ' $digests)
 
       - name: Inspect image
         run: |
