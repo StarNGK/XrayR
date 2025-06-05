@@ -85,25 +85,25 @@ func (s *Sniffer) Sniff(c context.Context, payload []byte, network net.Network) 
 }
 
 func (s *Sniffer) Sniff(c context.Context, payload []byte, network net.Network) (SniffResult, error) {
-    var pendingSniffer []protocolSnifferWithMetadata
-    for _, si := range s.sniffer {
-        protocolSniffer := si.protocolSniffer
-        if si.metadataSniffer || si.network != network {
-            continue
-        }
-        result, err := protocolSniffer(c, payload)
-        if err == common.ErrNoClue {
-            pendingSniffer = append(pendingSniffer, si)
-            continue
-        } else if err == protocol.ErrProtoNeedMoreData { // Sniffer protocol matched, but need more data to complete sniffing
-            s.sniffer = []protocolSnifferWithMetadata{si}
-            return nil, err
-        }
+	var pendingSniffer []protocolSnifferWithMetadata
+	for _, si := range s.sniffer {
+		protocolSniffer := si.protocolSniffer
+		if si.metadataSniffer || si.network != network {
+			continue
+		}
+		result, err := protocolSniffer(c, payload)
+		if err == common.ErrNoClue {
+			pendingSniffer = append(pendingSniffer, si)
+			continue
+		} else if err == protocol.ErrProtoNeedMoreData { // Sniffer protocol matched, but need more data to complete sniffing
+			s.sniffer = []protocolSnifferWithMetadata{si}
+			return nil, err
+		}
 
-        if err == nil && result != nil {
-            return result, nil
-        }
-    }
+		if err == nil && result != nil {
+			return result, nil
+		}
+	}
 
 	if len(pendingSniffer) > 0 {
 		s.sniffer = pendingSniffer
