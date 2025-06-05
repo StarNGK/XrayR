@@ -66,35 +66,6 @@ func (s *Sniffer) Sniff(c context.Context, payload []byte, network net.Network) 
 		if err == common.ErrNoClue {
 			pendingSniffer = append(pendingSniffer, si)
 			continue
-                } else if err == protocol.ErrProtoNeedMoreData { // Sniffer protocol matched, but need more data to complete sniffing
-			s.sniffer = []protocolSnifferWithMetadata{si}
-			return nil, err
-		
-
-		if err == nil && result != nil {
-			return result, nil
-		}
-	}
-
-	if len(pendingSniffer) > 0 {
-		s.sniffer = pendingSniffer
-		return nil, common.ErrNoClue
-	}
-
-	return nil, errUnknownContent
-}
-
-func (s *Sniffer) Sniff(c context.Context, payload []byte, network net.Network) (SniffResult, error) {
-	var pendingSniffer []protocolSnifferWithMetadata
-	for _, si := range s.sniffer {
-		protocolSniffer := si.protocolSniffer
-		if si.metadataSniffer || si.network != network {
-			continue
-		}
-		result, err := protocolSniffer(c, payload)
-		if err == common.ErrNoClue {
-			pendingSniffer = append(pendingSniffer, si)
-			continue
 		} else if err == protocol.ErrProtoNeedMoreData { // Sniffer protocol matched, but need more data to complete sniffing
 			s.sniffer = []protocolSnifferWithMetadata{si}
 			return nil, err
@@ -113,6 +84,32 @@ func (s *Sniffer) Sniff(c context.Context, payload []byte, network net.Network) 
 	return nil, errUnknownContent
 }
 
+func (s *Sniffer) SniffMetadata(c context.Context) (SniffResult, error) {
+	var pendingSniffer []protocolSnifferWithMetadata
+	for _, si := range s.sniffer {
+		s := si.protocolSniffer
+		if !si.metadataSniffer {
+			pendingSniffer = append(pendingSniffer, si)
+			continue
+		}
+		result, err := s(c, nil)
+		if err == common.ErrNoClue {
+			pendingSniffer = append(pendingSniffer, si)
+			continue
+		}
+
+		if err == nil && result != nil {
+			return result, nil
+		}
+	}
+
+	if len(pendingSniffer) > 0 {
+		s.sniffer = pendingSniffer
+		return nil, common.ErrNoClue
+	}
+
+	return nil, errUnknownContent
+}
 func CompositeResult(domainResult SniffResult, protocolResult SniffResult) SniffResult {
 	return &compositeResult{domainResult: domainResult, protocolResult: protocolResult}
 }
