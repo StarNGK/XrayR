@@ -1,7 +1,5 @@
 package mydispatcher
 
-//go:generate go run github.com/xtls/xray-core/common/errors/errorgen
-
 import (
 	"context"
 	"fmt"
@@ -377,7 +375,10 @@ func sniffer(ctx context.Context, cReader *cachedReader, metadataOnly bool, netw
 				return nil, ctx.Err()
 			default:
 				cachingStartingTimeStamp := time.Now()
-				cacheErr := cReader.Cache(payload, cacheDeadline)Add commentMore actions
+				err := cReader.Cache(payload, cacheDeadline)Add commentMore actions
+				if err != nil {
+					return nil, err
+				}
 				cachingTimeElapsed := time.Since(cachingStartingTimeStamp)
 				cacheDeadline -= cachingTimeElapsed
 
@@ -387,12 +388,12 @@ func sniffer(ctx context.Context, cReader *cachedReader, metadataOnly bool, netw
 					case common.ErrNoClue: // No Clue: protocol not matches, and sniffer cannot determine whether there will be a match or not
 						totalAttempt++Add commentMore actions
 					case protocol.ErrProtoNeedMoreData: // Protocol Need More Data: protocol matches, but need more data to complete sniffing
-						if cacheErr != nil { // Cache error (e.g. timeout) counts for failed attempt
-							totalAttempt++
-						}
+						// in this case, do not add totalAttempt(allow to read until timeout)
 					default:
 						return result, err
 					}
+				} else {Add commentMore actions
+					totalAttempt++					
 				}
 				if totalAttempt >= 2 || cacheDeadline <= 0 {Add commentMore actions
 					return nil, errSniffingTimeout
