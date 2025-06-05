@@ -38,7 +38,7 @@ type cachedReader struct {
 }
 
 func (r *cachedReader) Cache(b *buf.Buffer, deadline time.Duration) error {
-	mb, err := r.reader.ReadMultiBufferTimeout(deadline)Add commentMore actions
+	mb, err := r.reader.ReadMultiBufferTimeout(deadline)
 	if err != nil {
 		return err
 	}
