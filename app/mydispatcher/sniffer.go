@@ -84,19 +84,21 @@ func (s *Sniffer) Sniff(c context.Context, payload []byte, network net.Network) 
 	return nil, errUnknownContent
 }
 
-func (s *Sniffer) SniffMetadata(c context.Context) (SniffResult, error) {
+func (s *Sniffer) Sniff(c context.Context, payload []byte, network net.Network) (SniffResult, error) {
 	var pendingSniffer []protocolSnifferWithMetadata
 	for _, si := range s.sniffer {
-		s := si.protocolSniffer
+	        protocolSniffer := si.protocolSniffer
 		if !si.metadataSniffer {
 			pendingSniffer = append(pendingSniffer, si)
 			continue
 		}
-		result, err := s(c, nil)
+		result, err := protocolSniffer(c, payload)
 		if err == common.ErrNoClue {
 			pendingSniffer = append(pendingSniffer, si)
 			continue
-		}
+		} else if err == protocol.ErrProtoNeedMoreData { // Sniffer protocol matched, but need more data to complete sniffing
+			s.sniffer = []protocolSnifferWithMetadata{si}
+			return nil, err
 
 		if err == nil && result != nil {
 			return result, nil
