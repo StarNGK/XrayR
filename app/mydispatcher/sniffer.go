@@ -66,7 +66,7 @@ func (s *Sniffer) Sniff(c context.Context, payload []byte, network net.Network) 
 		if err == common.ErrNoClue {
 			pendingSniffer = append(pendingSniffer, si)
 			continue
-                } else if err == protocol.ErrProtoNeedMoreData { // Sniffer protocol matched, but need more data to complete sniffingAdd commentMore actions
+                } else if err == protocol.ErrProtoNeedMoreData { // Sniffer protocol matched, but need more data to complete sniffing
 			s.sniffer = []protocolSnifferWithMetadata{si}
 			return nil, err
 		
