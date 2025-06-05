@@ -46,7 +46,7 @@ func (r *cachedReader) Cache(b *buf.Buffer, deadline time.Duration) error {
 	if !mb.IsEmpty() {
 		r.cache, _ = buf.MergeMulti(r.cache, mb)
 	}
-	b.Clear()Add commentMore actions
+	b.Clear()
 	rawBytes := b.Extend(b.Cap())
 	n := r.cache.Copy(rawBytes)
 	b.Resize(0, int32(n))
