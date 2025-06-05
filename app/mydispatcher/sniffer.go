@@ -87,7 +87,7 @@ func (s *Sniffer) Sniff(c context.Context, payload []byte, network net.Network) 
 func (s *Sniffer) Sniff(c context.Context, payload []byte, network net.Network) (SniffResult, error) {
 	var pendingSniffer []protocolSnifferWithMetadata
 	for _, si := range s.sniffer {
-	        protocolSniffer := si.protocolSniffer
+		protocolSniffer := si.protocolSniffer
 		if si.metadataSniffer || si.network != network {
 			continue
 		}
