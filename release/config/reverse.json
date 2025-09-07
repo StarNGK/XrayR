@@ -1,0 +1,14 @@
+{
+  "bridges": [
+    {
+      "tag": "bridge",
+      "domain": "test.xray.com"
+    }
+  ],
+  "portals": [
+    {
+      "tag": "portal",
+      "domain": "test.xray.com"
+    }
+  ]
+} 
