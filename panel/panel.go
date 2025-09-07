@@ -93,6 +93,22 @@ func (p *Panel) loadCore(panelConfig *Config) *core.Instance {
 	if err != nil {
 		log.Panicf("Failed to understand Routing config  Please check: https://xtls.github.io/config/routing.html for help: %s", err)
 	}
+	// Reverse proxy config
+	coreReverseConfig := &conf.ReverseConfig{}
+	if panelConfig.ReverseConfigPath != "" {
+		if data, err := os.ReadFile(panelConfig.ReverseConfigPath); err != nil {
+			log.Panicf("Failed to read Reverse config file at: %s", panelConfig.ReverseConfigPath)
+		} else {
+			if err = json.Unmarshal(data, coreReverseConfig); err != nil {
+				log.Panicf("Failed to unmarshal Reverse config: %s", panelConfig.ReverseConfigPath)
+			}
+		}
+	}
+	reverseConfig, err := coreReverseConfig.Build()
+	if err != nil {
+		log.Panicf("Failed to understand Reverse config, Please check: https://xtls.github.io/config/reverse.html for help: %s", err)
+	}
+	
 	// Custom Inbound config
 	var coreCustomInboundConfig []conf.InboundDetourConfig
 	if panelConfig.InboundConfigPath != "" {
@@ -147,6 +163,7 @@ func (p *Panel) loadCore(panelConfig *Config) *core.Instance {
 			serial.ToTypedMessage(policyConfig),
 			serial.ToTypedMessage(dnsConfig),
 			serial.ToTypedMessage(routeConfig),
+			serial.ToTypedMessage(reverseConfig),			
 		},
 		Inbound:  inBoundConfig,
 		Outbound: outBoundConfig,
