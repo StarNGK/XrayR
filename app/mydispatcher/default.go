@@ -47,7 +47,7 @@ func (r *cachedReader) Cache(b *buf.Buffer, deadline time.Duration) error {
 		r.cache, _ = buf.MergeMulti(r.cache, mb)
 	}
 	b.Clear()
-	rawBytes := b.Extend(b.Cap())
+	rawBytes := b.Extend(min(r.cache.Len(), b.Cap()))
 	n := r.cache.Copy(rawBytes)
 	b.Resize(0, int32(n))
 	r.Unlock()
@@ -379,6 +379,7 @@ func sniffer(ctx context.Context, cReader *cachedReader, metadataOnly bool, netw
 				if err != nil {
 					return nil, err
 				}
+
 				cachingTimeElapsed := time.Since(cachingStartingTimeStamp)
 				cacheDeadline -= cachingTimeElapsed
 
@@ -393,7 +394,7 @@ func sniffer(ctx context.Context, cReader *cachedReader, metadataOnly bool, netw
 						return result, err
 					}
 				} else {
-					totalAttempt++					
+					totalAttempt++
 				}
 				if totalAttempt >= 2 || cacheDeadline <= 0 {
 					return nil, errSniffingTimeout
